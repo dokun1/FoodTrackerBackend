@@ -358,7 +358,7 @@ To work with the ORM, the struct Meal needs to implement the Model.
 import SwiftKueryORM
 import SwiftKueryPostgreSQL
 ```
-3. Below the line that reads `public let health = Health()`, extend `Meal` to adhere to `Model` like so: 
+3. Below the line that reads `public let health = Health()`, extend `Meal` to conform to `Model` like so: 
 ```swift
 extension Meal: Model { }
 ```
