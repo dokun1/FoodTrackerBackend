@@ -353,18 +353,18 @@ Now when you press play, Xcode will start your FoodTracker server listening on p
 To work with the ORM, the struct Meal needs to implement the Model.
 
 1. Open your `Sources > Application > Application.swift` file
-2. Add SwiftKueryORM to the import statements:
+2. Add two libraries to the import statements:
 ```swift
 import SwiftKueryORM
 import SwiftKueryPostgreSQL
 ```
-3. Below the line that reads `public let health = Health()`, extend Meal to adhere to `Model` like so: 
+3. Below the line that reads `public let health = Health()`, extend `Meal` to adhere to `Model` like so: 
 ```swift
 extension Meal: Model { }
 ```
 
 ### Deleting the server mealStore
-Since we will be storing the meal data in a database we no longer need a local meal store on the server.
+Since we will be storing the meal data in a database, we no longer need a local meal store on the server.
 
 1. Open your `Sources > Application > Application.swift` file
 
@@ -395,7 +395,7 @@ class Persistence {
 
 }
 ```
-2. Inside this class, create a static function that will set up a connection and create a table in the database:
+2. Inside this class, create a static function that will set up a connection pool and assign it to a default database:
 
 ```swift
 static func setUp() {
