@@ -36,8 +36,10 @@ cd Views
 3. Create a `FoodTemplate.stencil` file, then open it with any text editor:
 ```
 touch FoodTemplate.stencil
-open FoodTemplate.stencil
+open -a Xcode.app FoodTemplate.stencil
 ```
+
+**NB**: You can use any text editor to open the `.stencil` file.
 
 4. Add the following Stencil template code to display the meals:
 
@@ -68,7 +70,7 @@ open Package.swift
 ```
 3. Change the target for Application to include "KituraStencil":
 ```swift
-.target(name: "Application", dependencies: [ "Kitura", "CloudEnvironment", "SwiftMetrics", "Health", "KituraStencil"]),
+.target(name: "Application", dependencies: [ "Kitura", "CloudEnvironment", "SwiftMetrics", "Health", "SwiftKueryORM", "SwiftKueryPostgreSQL", "KituraStencil"]),
 ```
 4. Regenerate your FoodServer Xcode project:
 ```
@@ -120,7 +122,11 @@ Meal.findAll { (result: [Meal]?, error: RequestError?) in
 3. Render the template and add it to your `response`.
 Add the following line above `next()`:
 ```swift
-try! response.render("FoodTemplate.stencil", context: allMeals)
+do {
+    try response.render("FoodTemplate.stencil", context: allMeals)
+} catch let error {
+    response.send(json: ["Error": error.localizedDescription])
+}
 ```
 This will render the `FoodTemplate.stencil` file using `allMeals` to embed variables from the code.
 
@@ -139,7 +145,11 @@ router.get("/foodtracker") { request, response, next in
         for meal in meals {
             allMeals["meals"]?.append(["name": meal.name, "rating": meal.rating])
         }
-        try! response.render("FoodTemplate.stencil", context: allMeals)
+        do {
+            try response.render("FoodTemplate.stencil", context: allMeals)
+        } catch let error {
+            response.send(json: ["Error": error.localizedDescription])
+        }
     }
 }
 ```
@@ -173,7 +183,6 @@ This will create a file with the name of your meal and a .jpg extension inside t
 5. Your `storeHandler` function should now look as follows:
 ```swift
 func storeHandler(meal: Meal, completion: (Meal?, RequestError?) -> Void ) {
-    Meal.
     let path = "\(self.rootPath)/\(meal.name).jpg"
     fileManager.createFile(atPath: path, contents: meal.photo)
     meal.save(completion)
@@ -191,7 +200,7 @@ router.get("/images", middleware: StaticFileServer())
 2. Open your "FoodTemplate.stencil" file:
 ```
 cd ~/FoodTrackerBackend/FoodServer/Views
-open FoodTemplate.stencil
+open -a Xcode.app FoodTemplate.stencil
 ```
 3. Add the following line in your `for` loop below the line  `- {{ meal.name }} with rating {{ meal.rating }}. <br />`
 ```
@@ -213,7 +222,7 @@ cd ~/FoodTrackerBackend/FoodServer/Views
 ```
 2. Open your `FoodTemplate.stencil` file:
 ```
-open FoodTemplate.stencil
+open -a Xcode.app FoodTemplate.stencil
 ```
 3. Add the following code below `{% endfor %}`:
 ```
@@ -285,9 +294,9 @@ Insert the following code after the else block:
 ```swift
 let path = "\(self.rootPath)/\(newMeal.name).jpg"
 self.fileManager.createFile(atPath: path, contents: newMeal.photo)
-newMeal.save({ (meal: Meal?, error: RequestError?) in
+newMeal.save { (meal: Meal?, error: RequestError?) in
     next()
-})
+}
 ```
 For simplicity we are only accepting `.jpg` files from the web page.
 
@@ -330,7 +339,7 @@ Restart your server to add your new changes. When you add a new meal at [http://
 
 ## Adding HTML and CSS
 
-We have provided some basic html and css in a file called `Example.stencil`. To improve the presentation of the webpage, We will serve this template instead of `FoodTemplate.stencil`.
+We have provided some basic html and css in a file called `Example.stencil`. To improve the presentation of the webpage, we will serve this template instead of `FoodTemplate.stencil`.
 
 ### Move `Example.Stencil` to the Views folder
 1. Open your terminal window.
