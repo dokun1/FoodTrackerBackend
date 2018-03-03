@@ -329,9 +329,9 @@ router.post("/foodtracker") { request, response, next in
     }
 	 let path = "\(self.rootPath)/\(newMeal.name).jpg"
 	 self.fileManager.createFile(atPath: path, contents: newMeal.photo)
-	 newMeal.save({ (meal: Meal?, error: RequestError?) in
+	 newMeal.save { (meal: Meal?, error: RequestError?) in
 	     next()
-	 })
+	 }
 }
 ```
 
