@@ -107,9 +107,6 @@ Add the following code inside your “/foodtracker" route above `next()`:
 
 ```swift
 Meal.findAll { (result: [Meal]?, error: RequestError?) in
-    defer {
-        next()
-    }
     guard let meals = result else {
         return
     }
@@ -135,9 +132,6 @@ This will render the `FoodTemplate.stencil` file using `allMeals` to embed varia
 ```swift
 router.get("/foodtracker") { request, response, next in
     Meal.findAll { (result: [Meal]?, error: RequestError?) in
-        defer {
-            next()
-        }
         guard let meals = result else {
             return
         }
@@ -150,6 +144,7 @@ router.get("/foodtracker") { request, response, next in
         } catch let error {
             response.send(json: ["Error": error.localizedDescription])
         }
+        next()
     }
 }
 ```
